@@ -175,6 +175,30 @@ async function readBlob(id) {
 // ==========================================
 
 // Health & System Info
+// ---------- Kane CLI verification results ----------
+// Reads the checks and the latest raw Kane run for each one (written by scripts/verify.js).
+app.get('/api/kane/report', (req, res) => {
+  const kaneDir = path.join(__dirname, 'kane');
+  let checks = [];
+  try { checks = JSON.parse(fs.readFileSync(path.join(kaneDir, 'checks.json'), 'utf8')); } catch {}
+  const results = checks.map(c => {
+    const out = { id: c.id, objective: c.objective, status: 'not-run' };
+    try {
+      const raw = fs.readFileSync(path.join(kaneDir, 'runs', `${c.id}.ndjson`), 'utf8');
+      const events = raw.split('\n').map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+      const end = events.filter(e => e.type === 'run_end').pop();
+      const start = events.find(e => e.type === 'stream_start');
+      if (end) Object.assign(out, {
+        status: end.status, summary: end.summary, oneLiner: end.one_liner,
+        finalState: end.final_state, duration: end.duration, ranAt: end.ts || start?.ts
+      });
+    } catch {}
+    return out;
+  });
+  const passed = results.filter(r => r.status === 'passed').length;
+  res.json({ passed, total: results.length, results, cli: 'kane-cli' });
+});
+
 app.get('/api/health', async (req, res) => {
   const mw = getMemwal();
   let mwStatus = 'unconfigured';

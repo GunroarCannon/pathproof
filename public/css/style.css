@@ -1466,7 +1466,7 @@ dialog legend { font-weight: 700; padding: 0 6px; }
 }
 
 
-/* ---- Total Recall: Walrus Memory & Tatum Sui Styles ---- */
+/* ---- Walrus Memory styles ---- */
 .tuesday-banner {
   display: flex;
   align-items: center;
@@ -1598,7 +1598,7 @@ dialog legend { font-weight: 700; padding: 0 6px; }
   font-family: monospace;
 }
 
-/* Sui Proof Badge */
+/* Proof badge */
 .sui-stamp-btn {
   display: block;
   width: 100%;
@@ -5007,3 +5007,42 @@ body[data-paper='night'] .mem-chip.down { color: #86efac; }
   padding: 0 12px 8px;
   margin: 0;
 }
+
+/* ---------- Kane CLI verification badge + panel ---------- */
+.kane-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px 5px 9px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--panel);
+  font: 700 12px/1 var(--ui); color: var(--ink-soft); cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.kane-badge:hover { transform: translateY(-1px); box-shadow: 0 4px 14px var(--shadow); border-color: var(--accent); }
+.kane-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.kane-badge[data-state='pass'] .kane-dot { background: var(--green); box-shadow: 0 0 0 0 var(--green); animation: kanePulse 2.4s infinite; }
+.kane-badge[data-state='fail'] .kane-dot { background: var(--red); }
+.kane-badge[data-state='pass'] .kane-count { color: var(--green); }
+.kane-badge[data-state='fail'] .kane-count { color: var(--red); }
+.kane-label { letter-spacing: .02em; }
+.kane-count { font-variant-numeric: tabular-nums; }
+@keyframes kanePulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (prefers-reduced-motion: reduce) { .kane-badge[data-state='pass'] .kane-dot { animation: none; } }
+
+.kane-dlg { width: min(620px, 92vw); max-height: 84vh; overflow: auto; }
+.kane-dlg-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+.kane-dlg-head h3 { margin: 2px 0 0; font-family: var(--ui); font-size: 19px; }
+.kane-eyebrow { font: 800 10.5px/1 var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.kane-list { list-style: none; padding: 0; margin: 14px 0 10px; display: grid; gap: 10px; }
+.kane-item { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel-2); }
+.kane-icon { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; color: #fff; background: var(--muted); }
+.kane-item[data-state='pass'] .kane-icon { background: var(--green); }
+.kane-item[data-state='fail'] .kane-icon { background: var(--red); }
+.kane-row { display: flex; justify-content: space-between; gap: 8px; font-family: var(--ui); }
+.kane-meta { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.kane-obj { color: var(--ink-soft); font-size: 13px; margin: 4px 0 6px; font-style: italic; }
+.kane-saw { margin: 0; padding-left: 16px; font-size: 13px; color: var(--ink); }
+.kane-saw li { margin: 2px 0; }
+.kane-foot code { background: var(--field); padding: 1px 6px; border-radius: 6px; border: 1px solid var(--border); }
