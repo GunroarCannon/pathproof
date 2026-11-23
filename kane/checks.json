@@ -1,0 +1,5 @@
+[
+  { "id": "loads", "objective": "Open the app. Close any tour or welcome popup. Verify the top bar shows a goal picker and a '+ Milestone' button, and no error message is visible." },
+  { "id": "new-goal", "objective": "Open the goal picker and click '+ New'. Type 'Get a junior developer job' as the goal and submit the form. Verify a map of milestones appears on the canvas and the route list in the left panel has at least 2 steps." },
+  { "id": "reroute", "objective": "Make sure a goal map is showing (create one called 'Run a marathon' via the goal picker '+ New' if none exists). Note the steps in the route list. Click a milestone in the middle of the route and block it. Verify the route list changes so the blocked milestone is no longer in it, or the app says no route is possible." }
+]
