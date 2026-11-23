@@ -42,7 +42,12 @@ function runCheck(check) {
     const a = ['run', check.objective, '--url', url, '--agent', '--headless',
       '--max-steps', String(check.maxSteps || 30), '--timeout', String(check.timeout || 300),
       '--final-validation', 'on'];
-    const child = spawn('kane-cli', a, { cwd: root, shell: process.platform === 'win32' });
+    // On Windows kane-cli is a .cmd shim, so it needs a shell; quote every arg ourselves.
+    const win = process.platform === 'win32';
+    const q = x => `"${String(x).replace(/"/g, '\\"')}"`;
+    const child = win
+      ? spawn(['kane-cli', ...a.map(q)].join(' '), { cwd: root, shell: true })
+      : spawn('kane-cli', a, { cwd: root });
     const lines = [];
     let buf = '';
     const onData = d => {
@@ -54,12 +59,20 @@ function runCheck(check) {
     child.stderr.on('data', onData);
     child.on('close', code => {
       if (buf) lines.push(buf);
+      mkdirSync(path.join(root, 'kane', 'runs'), { recursive: true });
+      writeFileSync(path.join(root, 'kane', 'runs', `${check.id}.ndjson`), lines.join(String.fromCharCode(10)));
       const events = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
       // Pull out anything that looks like a verdict, failure or bug from the NDJSON.
       const notes = events
         .filter(e => /fail|error|bug|assert|result|summary|final/i.test(e.type || e.event || ''))
         .map(e => e.message || e.reason || e.summary || e.text || JSON.stringify(e))
         .slice(-8);
+      const end = events.filter(e => e.type === 'run_end').pop();
+      if (end) {
+        const ok = end.status === 'passed';
+        const why = [end.summary, end.reason, end.final_state && 'final state: ' + JSON.stringify(end.final_state)].filter(Boolean);
+        return resolve({ check, ok, code, notes: why, summary: end.summary });
+      }
       const plain = lines.filter(l => !l.startsWith('{')).slice(-8);
       resolve({ check, ok: code === 0, code, notes: notes.length ? notes : plain });
     });
@@ -98,7 +111,7 @@ async function main() {
   const failed = results.filter(r => !r.ok);
   const md = [`# Kane report — ${new Date().toISOString()}`, `URL: ${url}`, '',
     ...results.flatMap(r => [`## ${r.ok ? '✅' : '❌'} ${r.check.id}`, `> ${r.check.objective}`, '',
-      ...(r.ok ? [] : r.notes.map(n => `- ${String(n).slice(0, 400)}`)), ''])].join('\n');
+      ...r.notes.map(n => `- ${String(n).slice(0, 400)}`), ''])].join('\n');
   mkdirSync(path.dirname(reportFile), { recursive: true });
   writeFileSync(reportFile, md);
 
