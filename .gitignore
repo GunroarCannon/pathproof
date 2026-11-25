@@ -35,3 +35,6 @@ script.md
 SCRIPT.md
 kane/.last-green
 kane/.last-fail
+
+.vercel
+.env*
