@@ -153,13 +153,48 @@
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
     .reveal.in { opacity: 1; transform: none; }
 
+
+    /* ---------- paper clouds, cloud gate, characters ---------- */
+    body { position: relative; overflow-x: hidden; }
+    nav { z-index: 50; }
+    header.hero, .strip, section, footer { position: relative; z-index: 2; }
+    .sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .sky.back { z-index: 1; }
+    .sky.front { z-index: 1; opacity: .55; }
+    .page-cloud { position: absolute; height: auto; will-change: transform; filter: drop-shadow(0 18px 30px rgba(58,36,48,.12)); }
+    .people { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+    .person { position: absolute; width: 112px; opacity: .22; will-change: transform; filter: grayscale(12%) drop-shadow(0 15px 25px rgba(0,0,0,.06)); }
+    .person img { width: 100%; height: auto; display: block; }
+
+    .map-col { position: relative; }
+    .hero-person { position: absolute; left: -46px; bottom: -40px; width: 118px; z-index: 6; pointer-events: none; transform-origin: bottom center; animation: sway 6s ease-in-out infinite; }
+    .hero-person img { width: 100%; display: block; filter: drop-shadow(0 12px 14px rgba(0,0,0,.14)); }
+    @keyframes sway { 0%,100% { transform: rotate(-1.2deg); } 50% { transform: rotate(1.2deg) translateY(-3px); } }
+    .strip .wrap { position: relative; }
+    .strip-person { position: absolute; right: -10px; top: -92px; width: 96px; pointer-events: none; }
+    .strip-person img { width: 100%; display: block; }
+    .cta-people { display: flex; justify-content: center; align-items: flex-end; gap: 18px; margin-bottom: 18px; }
+    .cta-people img { height: 132px; width: auto; filter: drop-shadow(0 10px 14px rgba(0,0,0,.12)); }
+    .cta-people img:nth-child(2) { height: 108px; }
+
+    /* cloud gate over the hero map: closed on load, parts open, then drifts away with scroll */
+    .gate { position: absolute; inset: -40px -40px -30px -40px; z-index: 5; pointer-events: none; overflow: hidden; border-radius: 30px; }
+    .gate img { position: absolute; height: auto; will-change: transform, opacity; filter: drop-shadow(0 20px 34px rgba(58,36,48,.16)); }
+    .gate .gl1 { width: 380px; left: -20px; top: 40px; }
+    .gate .gl2 { width: 300px; left: 40px; top: 230px; }
+    .gate .gr1 { width: 400px; right: -30px; top: 70px; transform: scaleX(-1); }
+    .gate .gr2 { width: 290px; right: 30px; top: 260px; transform: scaleX(-1); }
+    .gate .gc  { width: 330px; left: 50%; top: 150px; margin-left: -165px; }
+    .gate .mist { position: absolute; inset: 40px 60px; border-radius: 40%; background: radial-gradient(closest-side, rgba(250,247,240,.95), rgba(250,247,240,0)); }
+
     @media (max-width: 900px) {
       .hero .wrap, .loop .wrap { grid-template-columns: 1fr; }
       .steps, .features { grid-template-columns: 1fr; }
       .strip .wrap { grid-template-columns: repeat(2, 1fr); }
       nav .links { display: none; }
       .sticky-note { display: none; }
-      .map-card { transform: none; }
+      .map-card { transform: none !important; }
+      .hero-person, .strip-person, .people, .gate, .sky.front { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -168,6 +203,28 @@
   </style>
 </head>
 <body>
+  <div class="people" aria-hidden="true">
+    <div class="person" data-par="0.06" style="top:760px; left:0.5%;"><img src="assets/humaaans/webp/hu_stand_24.webp" alt="" loading="lazy"></div>
+    <div class="person" data-par="-0.05" style="top:1300px; right:0.5%;"><img src="assets/humaaans/webp/hu_sit_1.webp" alt="" loading="lazy"></div>
+    <div class="person" data-par="0.07" style="top:1900px; left:0.5%;"><img src="assets/humaaans/webp/hu_stand_11.webp" alt="" loading="lazy"></div>
+    <div class="person" data-par="-0.06" style="top:2500px; right:0.5%;"><img src="assets/humaaans/webp/hu_stand_16.webp" alt="" loading="lazy"></div>
+    <div class="person" data-par="0.05" style="top:3000px; left:0.5%;"><img src="assets/humaaans/webp/hu_sit_6.webp" alt="" loading="lazy"></div>
+  </div>
+  <div class="sky back" aria-hidden="true">
+    <img class="page-cloud" data-dir="ltr" data-rate="0.22" src="assets/cloud.png" alt="" style="top:620px; left:3%; width:460px; opacity:0.38;">
+    <img class="page-cloud" data-dir="rtl" data-rate="0.18" src="assets/cloud.png" alt="" style="top:1180px; right:4%; width:480px; opacity:0.42; transform:scaleX(-1);">
+    <img class="page-cloud" data-dir="ltr" data-rate="0.24" src="assets/cloud.png" alt="" style="top:1760px; left:5%; width:440px; opacity:0.36;">
+    <img class="page-cloud" data-dir="rtl" data-rate="0.19" src="assets/cloud.png" alt="" style="top:2320px; right:4%; width:490px; opacity:0.4; transform:scaleX(-1);">
+    <img class="page-cloud" data-dir="ltr" data-rate="0.23" src="assets/cloud.png" alt="" style="top:2900px; left:3%; width:460px; opacity:0.38;">
+    <img class="page-cloud" data-dir="rtl" data-rate="0.17" src="assets/cloud.png" alt="" style="top:3420px; right:6%; width:430px; opacity:0.34; transform:scaleX(-1);">
+  </div>
+  <div class="sky front" aria-hidden="true">
+    <img class="page-cloud" data-dir="rtl" data-rate="0.32" src="assets/cloud.png" alt="" style="top:900px; right:2%; width:400px; opacity:0.58; transform:scaleX(-1);">
+    <img class="page-cloud" data-dir="ltr" data-rate="0.34" src="assets/cloud.png" alt="" style="top:1460px; left:2%; width:430px; opacity:0.6;">
+    <img class="page-cloud" data-dir="rtl" data-rate="0.3" src="assets/cloud.png" alt="" style="top:2040px; right:2%; width:410px; opacity:0.52; transform:scaleX(-1);">
+    <img class="page-cloud" data-dir="ltr" data-rate="0.32" src="assets/cloud.png" alt="" style="top:2620px; left:2%; width:420px; opacity:0.48;">
+    <img class="page-cloud" data-dir="rtl" data-rate="0.28" src="assets/cloud.png" alt="" style="top:3160px; right:3%; width:410px; opacity:0.44; transform:scaleX(-1);">
+  </div>
   <nav>
     <div class="wrap">
       <a class="brand" href="/home">
@@ -201,21 +258,31 @@
         </div>
       </div>
 
-      <div class="map-card" aria-label="Animated example: A* finds a route, a step is blocked, and the route changes">
-        <div class="bar"><b>Get a junior dev job</b><span class="status" id="mapStatus">A* route: 4 steps</span></div>
-        <svg id="heroMap" viewBox="0 0 520 330">
-          <g id="edges"></g>
-          <path id="route" class="route" d=""/>
-          <g id="nodes"></g>
-        </svg>
-        <div class="legend"><span><i></i>cheapest route</span><span><i class="r"></i>blocked step</span></div>
-        <div class="sticky-note">Block a step: it replans in a blink.</div>
+      <div class="map-col">
+        <div class="gate" id="gate" aria-hidden="true">
+          <div class="mist"></div>
+          <img class="gl1" src="assets/cloud.png" alt=""><img class="gl2" src="assets/cloud.png" alt="">
+          <img class="gr1" src="assets/cloud.png" alt=""><img class="gr2" src="assets/cloud.png" alt="">
+          <img class="gc" src="assets/cloud.png" alt="">
+        </div>
+        <div class="map-card" id="mapCard" aria-label="Animated example: A* finds a route, a step is blocked, and the route changes">
+          <div class="bar"><b>Get a junior dev job</b><span class="status" id="mapStatus">A* route: 4 steps</span></div>
+          <svg id="heroMap" viewBox="0 0 520 330">
+            <g id="edges"></g>
+            <path id="route" class="route" d=""/>
+            <g id="nodes"></g>
+          </svg>
+          <div class="legend"><span><i></i>cheapest route</span><span><i class="r"></i>blocked step</span></div>
+          <div class="sticky-note">Block a step: it replans in a blink.</div>
+        </div>
+        <div class="hero-person" aria-hidden="true"><img src="assets/humaaans/webp/hu_stand_2.webp" alt=""></div>
       </div>
     </div>
   </header>
 
   <div class="strip">
     <div class="wrap">
+      <div class="strip-person" aria-hidden="true"><img src="assets/humaaans/webp/hu_sit_2.webp" alt="" loading="lazy"></div>
       <div class="stat reveal"><b>A*</b><span>search over your milestones</span></div>
       <div class="stat reveal"><b>4 costs</b><span>time, money, effort, risk</span></div>
       <div class="stat reveal"><b id="statChecks">3/3</b><span>Kane browser checks passing</span></div>
@@ -280,13 +347,18 @@
         <div class="feat reveal"><div class="glyph">✎</div><h3>Talk to your map</h3><p>Ask the built-in agent to add, explain or rework steps in plain language.</p></div>
         <div class="feat reveal"><div class="glyph">⇄</div><h3>Many routes, one pick</h3><p>Choose how many parallel routes to explore. A* still hands you one clear answer.</p></div>
         <div class="feat reveal"><div class="glyph">⌂</div><h3>Remembers you</h3><p>Your progress and friction carry across sessions and the command line.</p></div>
-        <div class="feat reveal"><div class="glyph">⏻</div><h3>Works offline</h3><p>No API keys? A built-in planner still draws a full map. Bring Groq, Claude or Ollama for richer ones.</p></div>
+        <div class="feat reveal"><div class="glyph">◇</div><h3>Works offline</h3><p>No API keys? A built-in planner still draws a full map. Bring Groq, Claude or Ollama for richer ones.</p></div>
       </div>
     </div>
   </section>
 
   <section class="cta">
     <div class="wrap">
+      <div class="cta-people reveal" aria-hidden="true">
+        <img src="assets/humaaans/webp/hu_stand_6.webp" alt="" loading="lazy">
+        <img src="assets/humaaans/webp/hu_sit_6.webp" alt="" loading="lazy">
+        <img src="assets/humaaans/webp/hu_stand_1.webp" alt="" loading="lazy">
+      </div>
       <h2 class="reveal">Where are you trying to get to?</h2>
       <p class="sub reveal" style="margin: 0 auto;">It takes about ten seconds to see the first route.</p>
       <form class="goal-form reveal" data-goal-form>
@@ -438,6 +510,61 @@
         </article>`;
       }).join('');
     }).catch(() => { document.getElementById('score').textContent = 'Results unavailable'; });
+
+
+    // ---------- clouds, cloud gate and characters, driven by scroll ----------
+    const gate = document.getElementById('gate');
+    const mapCard = document.getElementById('mapCard');
+    const mist = gate?.querySelector('.mist');
+    const drift = [...document.querySelectorAll('.page-cloud')].map(el => ({ el, rtl: el.dataset.dir === 'rtl', rate: +el.dataset.rate }));
+    const persons = [...document.querySelectorAll('.person')].map(el => ({ el, k: +el.dataset.par }));
+    const gateParts = gate ? [...gate.querySelectorAll('img')].map(el => ({
+      el, center: el.classList.contains('gc'),
+      side: el.className.startsWith('gl') ? -1 : 1, flip: el.className.startsWith('gr')
+    })) : [];
+    let opened = 0; // gate starts closed, eases to 0.55 open on load; scrolling opens it fully
+    function paint() {
+      const y = scrollY;
+      for (const c of drift) {
+        const dx = (y * c.rate).toFixed(1);
+        c.el.style.transform = c.rtl ? `translate3d(-${dx}px,0,0) scaleX(-1)` : `translate3d(${dx}px,0,0)`;
+      }
+      for (const p of persons) p.el.style.transform = `translate3d(0, ${(y * p.k).toFixed(1)}px, 0)`;
+      const p = Math.min(1, opened + Math.min(1, y / 420) * (1 - opened));
+      for (const g of gateParts) {
+        if (g.center) {
+          g.el.style.transform = `translate3d(0, ${(-p * 120).toFixed(1)}px, 0) scale(${(1 - p * .4).toFixed(3)})`;
+          g.el.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
+        } else {
+          g.el.style.transform = `translate3d(${(g.side * p * 520).toFixed(1)}px, ${(p * 30).toFixed(1)}px, 0)${g.flip ? ' scaleX(-1)' : ''}`;
+          g.el.style.opacity = Math.max(0, 1 - Math.max(0, p - .3) * 2.2).toFixed(3);
+        }
+      }
+      if (mist) mist.style.opacity = Math.max(0, 1 - p * 2.2).toFixed(3);
+      if (mapCard && innerWidth > 900) {
+        const h = Math.min(1, y / 420);
+        mapCard.style.transform = `translate3d(0, ${(h * 24).toFixed(1)}px, 0) rotate(${(.6 - h * .6).toFixed(2)}deg)`;
+      }
+    }
+    let ticking = false;
+    addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { paint(); ticking = false; });
+    }, { passive: true });
+    if (reduce) { opened = 1; gate?.classList.add('open'); paint(); }
+    else {
+      paint();
+      const t0 = performance.now() + 350;
+      const openStep = now => {
+        const k = Math.min(1, Math.max(0, (now - t0) / 1600));
+        opened = .78 * (1 - Math.pow(1 - k, 3));
+        if (k > .2) gate?.classList.add('open');
+        paint();
+        if (k < 1) requestAnimationFrame(openStep);
+      };
+      requestAnimationFrame(openStep);
+    }
 
     // ---------- reveal on scroll ----------
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
