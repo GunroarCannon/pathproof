@@ -100,13 +100,13 @@ async function main() {
   let checks = JSON.parse(readFileSync(path.join(root, 'kane', 'checks.json'), 'utf8'));
   if (only.length) checks = checks.filter(c => only.includes(c.id));
 
-  const results = [];
-  for (const c of checks) {
-    process.stderr.write(`[kane] ${c.id} … `);
+  // Run every check at the same time: total time is the slowest check, not the sum.
+  process.stderr.write(`[kane] running ${checks.length} checks in parallel: ${checks.map(c => c.id).join(', ')}\n`);
+  const results = await Promise.all(checks.map(async c => {
     const r = await runCheck(c);
-    process.stderr.write(r.ok ? 'pass\n' : `FAIL (exit ${r.code})\n`);
-    results.push(r);
-  }
+    process.stderr.write(`[kane] ${c.id} … ${r.ok ? 'pass' : `FAIL (exit ${r.code})`}\n`);
+    return r;
+  }));
 
   const failed = results.filter(r => !r.ok);
   const md = [`# Kane report — ${new Date().toISOString()}`, `URL: ${url}`, '',

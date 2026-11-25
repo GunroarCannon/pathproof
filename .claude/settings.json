@@ -3,7 +3,11 @@
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "node scripts/verify.js --hook", "timeout": 1200 }
+          {
+            "type": "command",
+            "command": "node scripts/verify.js --hook",
+            "timeout": 3600
+          }
         ]
       }
     ]
